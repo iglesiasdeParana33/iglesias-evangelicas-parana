@@ -1,0 +1,578 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0b2742">
+<title>Iglesias Evangélicas de Paraná</title>
+<style>
+:root{
+ --navy:#09233d; --navy2:#123f62; --gold:#d4a64c; --gold2:#efc96f;
+ --ink:#132a40; --muted:#66788a; --bg:#f3f6f8; --line:#dfe7ee; --white:#fff;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+.hero{position:relative;min-height:410px;overflow:hidden;color:white;background:
+ linear-gradient(120deg,rgba(4,20,36,.98),rgba(11,56,87,.90)),
+ radial-gradient(circle at 78% 20%,rgba(212,166,76,.55),transparent 25%);}
+/* Abstract architectural/devotional shapes — CSS, not an image */
+.hero::before{content:"";position:absolute;width:700px;height:700px;right:-260px;top:-380px;border:1px solid rgba(255,255,255,.17);border-radius:50%;box-shadow:0 0 0 55px rgba(255,255,255,.035),0 0 0 110px rgba(255,255,255,.025)}
+.hero::after{content:"";position:absolute;width:520px;height:520px;left:-270px;bottom:-390px;border:1px solid rgba(212,166,76,.30);border-radius:50%}
+.hero-inner{position:relative;z-index:2;max-width:1160px;margin:auto;padding:54px 22px 112px}
+.brand-mark{font-size:38px;color:var(--gold2);margin-bottom:12px}
+h1{font-family:Georgia,serif;font-weight:500;font-size:clamp(35px,6vw,64px);line-height:.98;letter-spacing:-2px;margin:0 0 18px;max-width:760px}
+h1 span{color:var(--gold2)}
+.lead{max-width:640px;color:#dce7ef;font-size:17px;line-height:1.6;margin:0}
+.hero-stats{display:flex;align-items:center;gap:14px;margin-top:28px}
+.stat{background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.15);border-radius:15px;padding:11px 17px;backdrop-filter:blur(8px)}
+.stat strong{display:block;color:var(--gold2);font-size:24px}
+.stat small{color:#dbe7ef}
+.container{max-width:1160px;margin:-55px auto 90px;padding:0 18px;position:relative;z-index:3}
+.toolbar{background:#fff;border:1px solid var(--line);border-radius:20px;padding:14px;display:flex;gap:12px;box-shadow:0 18px 42px rgba(9,35,61,.12);margin-bottom:18px}
+.searchbox{position:relative;flex:1}
+.searchbox span{position:absolute;left:15px;top:12px;color:#758699;font-size:21px}
+.searchbox input{width:100%;padding:14px 16px 14px 44px;border:1px solid var(--line);border-radius:13px;font-size:16px;outline:0;background:#fbfcfd}
+.searchbox input:focus{border-color:#8baec5;box-shadow:0 0 0 3px #145b8f16}
+.filter{border:1px solid var(--line);background:white;border-radius:13px;padding:0 15px;color:var(--ink);font-weight:600}
+.content{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(350px,.85fr);gap:18px;align-items:start}
+.list-panel,.map-panel{background:#fff;border:1px solid var(--line);border-radius:20px;overflow:hidden;box-shadow:0 10px 28px rgba(9,35,61,.06)}
+.panel-head{padding:17px 18px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center}
+.panel-head h2{margin:0;font-size:18px}
+.panel-head span{color:var(--muted);font-size:13px}
+.list{padding:12px;display:grid;gap:10px;max-height:690px;overflow:auto}
+.church-card{display:flex;align-items:center;gap:13px;border:1px solid var(--line);border-radius:16px;padding:14px;min-height:105px;background:white;transition:.16s}
+.church-card:hover{border-color:#b7cad8;box-shadow:0 8px 20px rgba(9,35,61,.07);transform:translateY(-1px)}
+.church-num{width:42px;height:42px;flex:none;display:grid;place-items:center;border-radius:12px;background:#eaf2f7;color:var(--navy2);font-weight:800;font-size:13px}
+.church-info{min-width:0;flex:1}
+.church-info h3{font-size:16px;line-height:1.3;margin:0 0 7px}
+.address{font-size:13px;color:var(--muted);margin:0 0 10px;line-height:1.4}
+.address span{color:var(--gold);font-size:17px;margin-right:5px}
+.route{display:inline-block;color:var(--navy2);font-size:12px;font-weight:800;text-decoration:none}
+.route:hover{text-decoration:underline}
+.focus{width:31px;height:31px;border-radius:50%;border:1px solid #dbe4eb;background:#f7fafc;color:var(--gold);cursor:pointer}
+.map-panel{position:sticky;top:15px}
+.map-title{padding:17px 18px;display:flex;justify-content:space-between;align-items:center}
+.map-title h2{margin:0;font-size:18px}
+.map-title span{font-size:12px;color:var(--muted)}
+.map{height:690px;background:#dfeee3;position:relative;overflow:hidden}
+
+.map-note{position:absolute;left:12px;right:12px;bottom:12px;background:rgba(255,255,255,.94);border-radius:13px;padding:11px 13px;font-size:12px;color:var(--muted);box-shadow:0 7px 18px rgba(0,0,0,.12)}
+.empty{display:none;text-align:center;color:var(--muted);padding:35px}
+.music{position:fixed;right:18px;bottom:18px;z-index:20;background:rgba(9,35,61,.97);color:#fff;border-radius:18px;padding:8px 12px 8px 8px;display:flex;align-items:center;gap:10px;box-shadow:0 12px 30px rgba(0,0,0,.25);border:1px solid rgba(255,255,255,.12)}
+.music button{width:44px;height:44px;border:0;border-radius:50%;background:var(--gold);color:var(--navy);font-size:17px;cursor:pointer}
+.music strong{display:block;font-size:12px}
+.music small{display:block;color:#bfcbd6;font-size:10px;margin-top:2px}
+.bottom{display:none}
+footer{text-align:center;color:#778798;font-size:12px;padding:0 20px 40px}
+@media(max-width:850px){
+ .content{grid-template-columns:1fr}
+ .map-panel{position:relative;top:auto;order:-1}
+ .map{height:360px}
+ .list{max-height:none}
+}
+@media(max-width:600px){
+ .hero{min-height:360px}
+ .hero-inner{padding:42px 18px 92px}
+ h1{font-size:39px;letter-spacing:-1.2px}
+ .lead{font-size:15px}
+ .hero-stats{margin-top:22px}
+ .toolbar{display:block;padding:11px}
+ .filter{width:100%;height:45px;margin-top:9px}
+ .container{padding:0 11px;margin-top:-42px}
+ .map-panel{border-radius:18px}
+ .map{height:300px}
+ .music{right:11px;bottom:64px}
+ .music .labels{display:none}
+ .bottom{display:flex;position:fixed;z-index:19;left:0;right:0;bottom:0;height:57px;background:var(--navy);color:white;justify-content:space-around;align-items:center}
+ .bottom a{color:#dbe5ec;text-decoration:none;text-align:center;font-size:10px}
+ .bottom b{display:block;color:var(--gold2);font-size:18px;margin-bottom:2px}
+}
+</style>
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+<style>
+#churchMap{height:100%;width:100%;min-height:300px}
+.map .leaflet-container{font-family:inherit}
+.number-marker{
+  width:31px;height:31px;border-radius:50%;
+  background:#09233d;color:#fff;border:2px solid #fff;
+  box-shadow:0 3px 10px rgba(0,0,0,.25);
+  display:grid;place-items:center;font-size:11px;font-weight:800;
+}
+.leaflet-popup-content-wrapper{border-radius:13px}
+.leaflet-popup-content{margin:13px 15px;font-family:inherit}
+.popup-title{font-weight:800;color:#09233d;font-size:14px;margin-bottom:5px}
+.popup-address{font-size:12px;color:#66788a;margin-bottom:9px}
+.popup-route{color:#145b8f;font-weight:800;font-size:12px;text-decoration:none}
+</style>
+</head>
+<body>
+
+<header class="hero" id="inicio">
+  <div class="hero-inner">
+    <div class="brand-mark">✝</div>
+    <h1>IGLESIAS <span>EVANGÉLICAS</span><br>DE PARANÁ</h1>
+    <p class="lead">Un espacio para encontrar y conocer iglesias evangélicas de Paraná y sus alrededores.</p>
+    <div class="hero-stats">
+      <div class="stat"><strong>33</strong><small>iglesias</small></div>
+      <div class="stat"><strong>01</strong><small>directorio</small></div>
+    </div>
+  </div>
+</header>
+
+<main class="container">
+  <section class="toolbar">
+    <div class="searchbox">
+      <span>⌕</span>
+      <input id="search" type="search" placeholder="Buscar iglesia por nombre o dirección..." autocomplete="off">
+    </div>
+    <select class="filter" id="view">
+      <option>Todos los barrios</option>
+      <option>Lista</option>
+      <option>Mapa</option>
+    </select>
+  </section>
+
+  <section class="content">
+    <div class="list-panel" id="listPanel">
+      <div class="panel-head">
+        <h2>Listado de iglesias</h2>
+        <span id="count">33 iglesias</span>
+      </div>
+      <div class="list" id="list">
+    <article class="church-card" data-search="fundación la nueva alianza marangunich 640" data-n="1">
+      <div class="church-num">01</div>
+      <div class="church-info">
+        <h3>Fundación La Nueva Alianza</h3>
+        <p class="address"><span>⌖</span>Marangunich 640</p>
+        <a href="https://www.google.com/maps/search/?api=1&query=Marangunich+640,+Paraná,+Entre+Ríos,+Argentina" target="_blank" rel="noopener" class="route">Cómo llegar <b>↗</b></a>
+      </div>
+      <button class="focus" title="Ver en el mapa" aria-label="Ver en el mapa">●</button>
+    </article>
+    <article class="church-card" data-search="iglesia la senda antigua crisólogo larralde 629" data-n="2">
+      <div class="church-num">02</div>
+      <div class="church-info">
+        <h3>Iglesia La Senda Antigua</h3>
+        <p class="address"><span>⌖</span>Crisólogo Larralde 629</p>
+        <a href="https://www.google.com/maps/search/?api=1&query=Crisólogo+Larralde+629,+Paraná,+Entre+Ríos,+Argentina" target="_blank" rel="noopener" class="route">Cómo llegar <b>↗</b></a>
+      </div>
+      <button class="focus" title="Ver en el mapa" aria-label="Ver en el mapa">●</button>
+    </article>
+    <article class="church-card" data-search="iglesia evangélica rey de reyes santa fe 1052 – san benito" data-n="3">
+      <div class="church-num">03</div>
+      <div class="church-info">
+        <h3>Iglesia Evangélica Rey de Reyes</h3>
+        <p class="address"><span>⌖</span>Santa Fe 1052 – San Benito</p>
+        <a href="https://www.google.com/maps/search/?api=1&query=Santa+Fe+1052+–+San+Benito,+Paraná,+Entre+Ríos,+Argentina" target="_blank" rel="noopener" class="route">Cómo llegar <b>↗</b></a>
+      </div>
+      <button class="focus" title="Ver en el mapa" aria-label="Ver en el mapa">●</button>
+    </article>
+    <article class="church-card" data-search="vida para dar vida selva de montiel 1117" data-n="4">
+      <div class="church-num">04</div>
+      <div class="church-info">
+        <h3>Vida para Dar Vida</h3>
+        <p class="address"><span>⌖</span>Selva de Montiel 1117</p>
+        <a href="https://www.google.com/maps/search/?api=1&query=Selva+de+Montiel+1117,+Paraná,+Entre+Ríos,+Argentina" target="_blank" rel="noopener" class="route">Cómo llegar <b>↗</b></a>
+      </div>
+      <button class="focus" title="Ver en el mapa" aria-label="Ver en el mapa">●</button>
+    </article>
+    <article class="church-card" data-search="iglesia emanuel blas parera 1544" data-n="5">
+      <div class="church-num">05</div>
+      <div class="church-info">
+        <h3>Iglesia Emanuel</h3>
+        <p class="address"><span>⌖</span>Blas Parera 1544</p>
+        <a href="https://www.google.com/maps/search/?api=1&query=Blas+Parera+1544,+Paraná,+Entre+Ríos,+Argentina" target="_blank" rel="noopener" class="route">Cómo llegar <b>↗</b></a>
+      </div>
+      <button class="focus" title="Ver en el mapa" aria-label="Ver en el mapa">●</button>
+    </article>
+    <article class="church-card" data-search="cfc echagüe 1174" data-n="6">
+      <div class="church-num">06</div>
+      <div class="church-info">
+        <h3>CFC</h3>
+        <p class="address"><span>⌖</span>Echagüe 1174</p>
+        <a href="https://www.google.com/maps/search/?api=1&query=Echagüe+1174,+Paraná,+Entre+Ríos,+Argentina" target="_blank" rel="noopener" class="route">Cómo llegar <b>↗</b></a>
+      </div>
+      <button class="focus" title="Ver en el mapa" aria-label="Ver en el mapa">●</button>
+    </article>
+    <article class="church-card" data-search="iglesia encuentro con dios montiel 863" data-n="7">
+      <div class="church-num">07</div>
+      <div class="church-info">
+        <h3>Iglesia Encuentro con Dios</h3>
+        <p class="address"><span>⌖</span>Montiel 863</p>
+        <a href="https://www.google.com/maps/search/?api=1&query=Montiel+863,+Paraná,+Entre+Ríos,+Argentina" target="_blank" rel="noopener" class="route">Cómo llegar <b>↗</b></a>
+      </div>
+      <button class="focus" title="Ver en el mapa" aria-label="Ver en el mapa">●</button>
+    </article>
+    <article class="church-card" data-search="iglesia vida y esperanza cura álvarez 628" data-n="8">
+      <div class="church-num">08</div>
+      <div class="church-info">
+        <h3>Iglesia Vida y Esperanza</h3>
+        <p class="address"><span>⌖</span>Cura Álvarez 628</p>
+        <a href="https://www.google.com/maps/search/?api=1&query=Cura+Álvarez+628,+Paraná,+Entre+Ríos,+Argentina" target="_blank" rel="noopener" class="route">Cómo llegar <b>↗</b></a>
+      </div>
+      <button class="focus" title="Ver en el mapa" aria-label="Ver en el mapa">●</button>
+    </article>
+    <article class="church-card" data-search="iglesia visión del futuro pascual palma 357" data-n="9">
+      <div class="church-num">09</div>
+      <div class="church-info">
+        <h3>Iglesia Visión del Futuro</h3>
+        <p class="address"><span>⌖</span>Pascual Palma 357</p>
+        <a href="https://www.google.com/maps/search/?api=1&query=Pascual+Palma+357,+Paraná,+Entre+Ríos,+Argentina" target="_blank" rel="noopener" class="route">Cómo llegar <b>↗</b></a>
+      </div>
+      <button class="focus" title="Ver en el mapa" aria-label="Ver en el mapa">●</button>
+    </article>
+    <article class="church-card" data-search="iglesia evangélica bautista villa gazzano gobernador bassavilbaso 1560" data-n="10">
+      <div class="church-num">10</div>
+      <div class="church-info">
+        <h3>Iglesia Evangélica Bautista Villa Gazzano</h3>
+        <p class="address"><span>⌖</span>Gobernador Bassavilbaso 1560</p>
+        <a href="https://www.google.com/maps/search/?api=1&query=Gobernador+Bassavilbaso+1560,+Paraná,+Entre+Ríos,+Argentina" target="_blank" rel="noopener" class="route">Cómo llegar <b>↗</b></a>
+      </div>
+      <button class="focus" title="Ver en el mapa" aria-label="Ver en el mapa">●</button>
+    </article>
+    <article class="church-card" data-search="iglesia bautista renacer av. francisco ramírez 4024" data-n="11">
+      <div class="church-num">11</div>
+      <div class="church-info">
+        <h3>Iglesia Bautista Renacer</h3>
+        <p class="address"><span>⌖</span>Av. Francisco Ramírez 4024</p>
+        <a href="https://www.google.com/maps/search/?api=1&query=Av.+Francisco+Ramírez+4024,+Paraná,+Entre+Ríos,+Argentina" target="_blank" rel="noopener" class="route">Cómo llegar <b>↗</b></a>
+      </div>
+      <button class="focus" title="Ver en el mapa" aria-label="Ver en el mapa">●</button>
+    </article>
+    <article class="church-card" data-search="iglesia la red los chanas 1225" data-n="12">
+      <div class="church-num">12</div>
+      <div class="church-info">
+        <h3>Iglesia La Red</h3>
+        <p class="address"><span>⌖</span>Los Chanas 1225</p>
+        <a href="https://www.google.com/maps/search/?api=1&query=Los+Chanas+1225,+Paraná,+Entre+Ríos,+Argentina" target="_blank" rel="noopener" class="route">Cómo llegar <b>↗</b></a>
+      </div>
+      <button class="focus" title="Ver en el mapa" aria-label="Ver en el mapa">●</button>
+    </article>
+    <article class="church-card" data-search="iglesia asamblea de dios – ministerio adulam gobernador mihura 1137" data-n="13">
+      <div class="church-num">13</div>
+      <div class="church-info">
+        <h3>Iglesia Asamblea de Dios – Ministerio Adulam</h3>
+        <p class="address"><span>⌖</span>Gobernador Mihura 1137</p>
+        <a href="https://www.google.com/maps/search/?api=1&query=Gobernador+Mihura+1137,+Paraná,+Entre+Ríos,+Argentina" target="_blank" rel="noopener" class="route">Cómo llegar <b>↗</b></a>
+      </div>
+      <button class="focus" title="Ver en el mapa" aria-label="Ver en el mapa">●</button>
+    </article>
+    <article class="church-card" data-search="centro cristiano internacional banda oriental 969" data-n="14">
+      <div class="church-num">14</div>
+      <div class="church-info">
+        <h3>Centro Cristiano Internacional</h3>
+        <p class="address"><span>⌖</span>Banda Oriental 969</p>
+        <a href="https://www.google.com/maps/search/?api=1&query=Banda+Oriental+969,+Paraná,+Entre+Ríos,+Argentina" target="_blank" rel="noopener" class="route">Cómo llegar <b>↗</b></a>
+      </div>
+      <button class="focus" title="Ver en el mapa" aria-label="Ver en el mapa">●</button>
+    </article>
+    <article class="church-card" data-search="iglesia de dios av. ejército 1678" data-n="15">
+      <div class="church-num">15</div>
+      <div class="church-info">
+        <h3>Iglesia de Dios</h3>
+        <p class="address"><span>⌖</span>Av. Ejército 1678</p>
+        <a href="https://www.google.com/maps/search/?api=1&query=Av.+Ejército+1678,+Paraná,+Entre+Ríos,+Argentina" target="_blank" rel="noopener" class="route">Cómo llegar <b>↗</b></a>
+      </div>
+      <button class="focus" title="Ver en el mapa" aria-label="Ver en el mapa">●</button>
+    </article>
+    <article class="church-card" data-search="iglesia de dios pentecostal – movimiento internacional villa san benito y las garzas" data-n="16">
+      <div class="church-num">16</div>
+      <div class="church-info">
+        <h3>Iglesia de Dios Pentecostal – Movimiento Internacional</h3>
+        <p class="address"><span>⌖</span>Villa San Benito y Las Garzas</p>
+        <a href="https://www.google.com/maps/search/?api=1&query=Villa+San+Benito+y+Las+Garzas,+Paraná,+Entre+Ríos,+Argentina" target="_blank" rel="noopener" class="route">Cómo llegar <b>↗</b></a>
+      </div>
+      <button class="focus" title="Ver en el mapa" aria-label="Ver en el mapa">●</button>
+    </article>
+    <article class="church-card" data-search="iglesia pentecostal filadelfia juan díaz de solís 1868" data-n="17">
+      <div class="church-num">17</div>
+      <div class="church-info">
+        <h3>Iglesia Pentecostal Filadelfia</h3>
+        <p class="address"><span>⌖</span>Juan Díaz de Solís 1868</p>
+        <a href="https://www.google.com/maps/search/?api=1&query=Juan+Díaz+de+Solís+1868,+Paraná,+Entre+Ríos,+Argentina" target="_blank" rel="noopener" class="route">Cómo llegar <b>↗</b></a>
+      </div>
+      <button class="focus" title="Ver en el mapa" aria-label="Ver en el mapa">●</button>
+    </article>
+    <article class="church-card" data-search="ministerio casa de dios padre bartolomé grella 1371" data-n="18">
+      <div class="church-num">18</div>
+      <div class="church-info">
+        <h3>Ministerio Casa de Dios</h3>
+        <p class="address"><span>⌖</span>Padre Bartolomé Grella 1371</p>
+        <a href="https://www.google.com/maps/search/?api=1&query=Padre+Bartolomé+Grella+1371,+Paraná,+Entre+Ríos,+Argentina" target="_blank" rel="noopener" class="route">Cómo llegar <b>↗</b></a>
+      </div>
+      <button class="focus" title="Ver en el mapa" aria-label="Ver en el mapa">●</button>
+    </article>
+    <article class="church-card" data-search="iglesia manantial de vida los talas 1438" data-n="19">
+      <div class="church-num">19</div>
+      <div class="church-info">
+        <h3>Iglesia Manantial de Vida</h3>
+        <p class="address"><span>⌖</span>Los Talas 1438</p>
+        <a href="https://www.google.com/maps/search/?api=1&query=Los+Talas+1438,+Paraná,+Entre+Ríos,+Argentina" target="_blank" rel="noopener" class="route">Cómo llegar <b>↗</b></a>
+      </div>
+      <button class="focus" title="Ver en el mapa" aria-label="Ver en el mapa">●</button>
+    </article>
+    <article class="church-card" data-search="misión iglesia del señor coronel francisco sayos 2242" data-n="20">
+      <div class="church-num">20</div>
+      <div class="church-info">
+        <h3>Misión Iglesia del Señor</h3>
+        <p class="address"><span>⌖</span>Coronel Francisco Sayos 2242</p>
+        <a href="https://www.google.com/maps/search/?api=1&query=Coronel+Francisco+Sayos+2242,+Paraná,+Entre+Ríos,+Argentina" target="_blank" rel="noopener" class="route">Cómo llegar <b>↗</b></a>
+      </div>
+      <button class="focus" title="Ver en el mapa" aria-label="Ver en el mapa">●</button>
+    </article>
+    <article class="church-card" data-search="iglesia nueva vida dirección pendiente de confirmar" data-n="21">
+      <div class="church-num">21</div>
+      <div class="church-info">
+        <h3>Iglesia Nueva Vida</h3>
+        <p class="address"><span>⌖</span>Dirección pendiente de confirmar</p>
+        <a href="https://www.google.com/maps/search/?api=1&query=Dirección+pendiente+de+confirmar,+Paraná,+Entre+Ríos,+Argentina" target="_blank" rel="noopener" class="route">Cómo llegar <b>↗</b></a>
+      </div>
+      <button class="focus" title="Ver en el mapa" aria-label="Ver en el mapa">●</button>
+    </article>
+    <article class="church-card" data-search="iglesia evangélica pentecostal argentina juan a. barbagelata 118" data-n="22">
+      <div class="church-num">22</div>
+      <div class="church-info">
+        <h3>Iglesia Evangélica Pentecostal Argentina</h3>
+        <p class="address"><span>⌖</span>Juan A. Barbagelata 118</p>
+        <a href="https://www.google.com/maps/search/?api=1&query=Juan+A.+Barbagelata+118,+Paraná,+Entre+Ríos,+Argentina" target="_blank" rel="noopener" class="route">Cómo llegar <b>↗</b></a>
+      </div>
+      <button class="focus" title="Ver en el mapa" aria-label="Ver en el mapa">●</button>
+    </article>
+    <article class="church-card" data-search="templo buenas nuevas juan vucetich 516" data-n="23">
+      <div class="church-num">23</div>
+      <div class="church-info">
+        <h3>Templo Buenas Nuevas</h3>
+        <p class="address"><span>⌖</span>Juan Vucetich 516</p>
+        <a href="https://www.google.com/maps/search/?api=1&query=Juan+Vucetich+516,+Paraná,+Entre+Ríos,+Argentina" target="_blank" rel="noopener" class="route">Cómo llegar <b>↗</b></a>
+      </div>
+      <button class="focus" title="Ver en el mapa" aria-label="Ver en el mapa">●</button>
+    </article>
+    <article class="church-card" data-search="iglesia una puerta abierta bazán y bustos 193" data-n="24">
+      <div class="church-num">24</div>
+      <div class="church-info">
+        <h3>Iglesia Una Puerta Abierta</h3>
+        <p class="address"><span>⌖</span>Bazán y Bustos 193</p>
+        <a href="https://www.google.com/maps/search/?api=1&query=Bazán+y+Bustos+193,+Paraná,+Entre+Ríos,+Argentina" target="_blank" rel="noopener" class="route">Cómo llegar <b>↗</b></a>
+      </div>
+      <button class="focus" title="Ver en el mapa" aria-label="Ver en el mapa">●</button>
+    </article>
+    <article class="church-card" data-search="iglesia cristiana evangélica vivir es cristo gobernador manuel crespo 733/761" data-n="25">
+      <div class="church-num">25</div>
+      <div class="church-info">
+        <h3>Iglesia Cristiana Evangélica Vivir es Cristo</h3>
+        <p class="address"><span>⌖</span>Gobernador Manuel Crespo 733/761</p>
+        <a href="https://www.google.com/maps/search/?api=1&query=Gobernador+Manuel+Crespo+733/761,+Paraná,+Entre+Ríos,+Argentina" target="_blank" rel="noopener" class="route">Cómo llegar <b>↗</b></a>
+      </div>
+      <button class="focus" title="Ver en el mapa" aria-label="Ver en el mapa">●</button>
+    </article>
+    <article class="church-card" data-search="iglesia evangélica ministerio profético a las naciones rondeau 1107" data-n="26">
+      <div class="church-num">26</div>
+      <div class="church-info">
+        <h3>Iglesia Evangélica Ministerio Profético a las Naciones</h3>
+        <p class="address"><span>⌖</span>Rondeau 1107</p>
+        <a href="https://www.google.com/maps/search/?api=1&query=Rondeau+1107,+Paraná,+Entre+Ríos,+Argentina" target="_blank" rel="noopener" class="route">Cómo llegar <b>↗</b></a>
+      </div>
+      <button class="focus" title="Ver en el mapa" aria-label="Ver en el mapa">●</button>
+    </article>
+    <article class="church-card" data-search="iepy – iglesia evangélica pentecostal y misionera soldado bordón 2396" data-n="27">
+      <div class="church-num">27</div>
+      <div class="church-info">
+        <h3>IEPY – Iglesia Evangélica Pentecostal y Misionera</h3>
+        <p class="address"><span>⌖</span>Soldado Bordón 2396</p>
+        <a href="https://www.google.com/maps/search/?api=1&query=Soldado+Bordón+2396,+Paraná,+Entre+Ríos,+Argentina" target="_blank" rel="noopener" class="route">Cómo llegar <b>↗</b></a>
+      </div>
+      <button class="focus" title="Ver en el mapa" aria-label="Ver en el mapa">●</button>
+    </article>
+    <article class="church-card" data-search="iep paraná – templo central enrique acebal 2508" data-n="28">
+      <div class="church-num">28</div>
+      <div class="church-info">
+        <h3>IEP Paraná – Templo Central</h3>
+        <p class="address"><span>⌖</span>Enrique Acebal 2508</p>
+        <a href="https://www.google.com/maps/search/?api=1&query=Enrique+Acebal+2508,+Paraná,+Entre+Ríos,+Argentina" target="_blank" rel="noopener" class="route">Cómo llegar <b>↗</b></a>
+      </div>
+      <button class="focus" title="Ver en el mapa" aria-label="Ver en el mapa">●</button>
+    </article>
+    <article class="church-card" data-search="la casa del alfarero av. jorge newbery 1643" data-n="29">
+      <div class="church-num">29</div>
+      <div class="church-info">
+        <h3>La Casa del Alfarero</h3>
+        <p class="address"><span>⌖</span>Av. Jorge Newbery 1643</p>
+        <a href="https://www.google.com/maps/search/?api=1&query=Av.+Jorge+Newbery+1643,+Paraná,+Entre+Ríos,+Argentina" target="_blank" rel="noopener" class="route">Cómo llegar <b>↗</b></a>
+      </div>
+      <button class="focus" title="Ver en el mapa" aria-label="Ver en el mapa">●</button>
+    </article>
+    <article class="church-card" data-search="asamblea cristiana antonio luis berutti 685" data-n="30">
+      <div class="church-num">30</div>
+      <div class="church-info">
+        <h3>Asamblea Cristiana</h3>
+        <p class="address"><span>⌖</span>Antonio Luis Berutti 685</p>
+        <a href="https://www.google.com/maps/search/?api=1&query=Antonio+Luis+Berutti+685,+Paraná,+Entre+Ríos,+Argentina" target="_blank" rel="noopener" class="route">Cómo llegar <b>↗</b></a>
+      </div>
+      <button class="focus" title="Ver en el mapa" aria-label="Ver en el mapa">●</button>
+    </article>
+    <article class="church-card" data-search="iglesia cristiana evangélica cervantes 547" data-n="31">
+      <div class="church-num">31</div>
+      <div class="church-info">
+        <h3>Iglesia Cristiana Evangélica</h3>
+        <p class="address"><span>⌖</span>Cervantes 547</p>
+        <a href="https://www.google.com/maps/search/?api=1&query=Cervantes+547,+Paraná,+Entre+Ríos,+Argentina" target="_blank" rel="noopener" class="route">Cómo llegar <b>↗</b></a>
+      </div>
+      <button class="focus" title="Ver en el mapa" aria-label="Ver en el mapa">●</button>
+    </article>
+    <article class="church-card" data-search="iglesia comunidad cristiana paraná las camelias 2846" data-n="32">
+      <div class="church-num">32</div>
+      <div class="church-info">
+        <h3>Iglesia Comunidad Cristiana Paraná</h3>
+        <p class="address"><span>⌖</span>Las Camelias 2846</p>
+        <a href="https://www.google.com/maps/search/?api=1&query=Las+Camelias+2846,+Paraná,+Entre+Ríos,+Argentina" target="_blank" rel="noopener" class="route">Cómo llegar <b>↗</b></a>
+      </div>
+      <button class="focus" title="Ver en el mapa" aria-label="Ver en el mapa">●</button>
+    </article>
+    <article class="church-card" data-search="congregación cristiana nueva unción paraná santiago solioz 2487" data-n="33">
+      <div class="church-num">33</div>
+      <div class="church-info">
+        <h3>Congregación Cristiana Nueva Unción Paraná</h3>
+        <p class="address"><span>⌖</span>Santiago Solioz 2487</p>
+        <a href="https://www.google.com/maps/search/?api=1&query=Santiago+Solioz+2487,+Paraná,+Entre+Ríos,+Argentina" target="_blank" rel="noopener" class="route">Cómo llegar <b>↗</b></a>
+      </div>
+      <button class="focus" title="Ver en el mapa" aria-label="Ver en el mapa">●</button>
+    </article></div>
+      <div class="empty" id="empty">No encontramos iglesias con esa búsqueda.</div>
+    </div>
+
+    <div class="map-panel" id="mapPanel">
+      <div class="map-title">
+        <h2>Mapa de iglesias</h2><span>Paraná · Entre Ríos</span>
+      </div>
+      <div class="map">
+        <div id="churchMap" aria-label="Mapa interactivo de las iglesias evangélicas de Paraná"></div>
+        <div class="map-note" id="mapStatus">Cargando las ubicaciones de las iglesias…</div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<div class="music">
+  <button id="musicBtn" aria-label="Reproducir música">▶</button>
+  <div class="labels"><strong>Instrumental de adoración</strong><small>Música ambiental</small></div>
+</div>
+
+<nav class="bottom">
+  <a href="#inicio"><b>⌂</b>Inicio</a>
+  <a href="#listPanel"><b>☷</b>Listado</a>
+  <a href="#mapPanel"><b>⌖</b>Mapa</a>
+  <a href="#" onclick="document.getElementById('musicBtn').click();return false"><b>♫</b>Música</a>
+</nav>
+
+<footer>Directorio de Iglesias Evangélicas de Paraná · Los datos podrán actualizarse posteriormente.</footer>
+
+<script>
+const input=document.getElementById('search'), cards=[...document.querySelectorAll('.church-card')];
+const count=document.getElementById('count'), empty=document.getElementById('empty');
+
+function filter(){
+ const q=input.value.trim().toLowerCase(); let n=0;
+ cards.forEach(c=>{
+   const ok=!q || c.dataset.search.includes(q);
+   c.style.display=ok?'flex':'none'; if(ok)n++;
+ });
+ count.textContent=n+(n===1?' iglesia':' iglesias');
+ empty.style.display=n?'none':'block';
+}
+input.addEventListener('input',filter);
+
+document.getElementById('view').addEventListener('change',e=>{
+ if(e.target.value==='Lista') document.getElementById('listPanel').scrollIntoView();
+ if(e.target.value==='Mapa') document.getElementById('mapPanel').scrollIntoView();
+ e.target.value='Todos los barrios';
+});
+
+const btn=document.getElementById('musicBtn');
+// Pista instrumental original: piano + pads ambientales, embebida para que el HTML sea autónomo.
+const audio = new Audio('musica_adoracion_piano_pads.wav');
+audio.loop = true;
+audio.preload = 'auto';
+btn.addEventListener('click', async ()=>{
+  if (audio.paused) {
+    try { await audio.play(); btn.textContent='⏸'; btn.setAttribute('aria-label','Pausar música'); }
+    catch(e) { alert('Toca nuevamente el botón para iniciar la música.'); }
+  } else {
+    audio.pause(); btn.textContent='▶'; btn.setAttribute('aria-label','Reproducir música'); }
+});
+audio.addEventListener('ended',()=>{ btn.textContent='▶'; });
+</script>
+
+<script>
+const churchData = [[1, "Fundación La Nueva Alianza", "Marangunich 640"], [2, "Iglesia La Senda Antigua", "Crisólogo Larralde 629"], [3, "Iglesia Evangélica Rey de Reyes", "Santa Fe 1052 – San Benito"], [4, "Vida para Dar Vida", "Selva de Montiel 1117"], [5, "Iglesia Emanuel", "Blas Parera 1544"], [6, "CFC", "Echagüe 1174"], [7, "Iglesia Encuentro con Dios", "Montiel 863"], [8, "Iglesia Vida y Esperanza", "Cura Álvarez 628"], [9, "Iglesia Visión del Futuro", "Pascual Palma 357"], [10, "Iglesia Evangélica Bautista Villa Gazzano", "Gobernador Bassavilbaso 1560"], [11, "Iglesia Bautista Renacer", "Av. Francisco Ramírez 4024"], [12, "Iglesia La Red", "Los Chanas 1225"], [13, "Iglesia Asamblea de Dios – Ministerio Adulam", "Gobernador Mihura 1137"], [14, "Centro Cristiano Internacional", "Banda Oriental 969"], [15, "Iglesia de Dios", "Av. Ejército 1678"], [16, "Iglesia de Dios Pentecostal – Movimiento Internacional", "Villa San Benito y Las Garzas"], [17, "Iglesia Pentecostal Filadelfia", "Juan Díaz de Solís 1868"], [18, "Ministerio Casa de Dios", "Padre Bartolomé Grella 1371"], [19, "Iglesia Manantial de Vida", "Los Talas 1438"], [20, "Misión Iglesia del Señor", "Coronel Francisco Sayos 2242"], [21, "Iglesia Nueva Vida", "Dirección pendiente de confirmar"], [22, "Iglesia Evangélica Pentecostal Argentina", "Juan A. Barbagelata 118"], [23, "Templo Buenas Nuevas", "Juan Vucetich 516"], [24, "Iglesia Una Puerta Abierta", "Bazán y Bustos 193"], [25, "Iglesia Cristiana Evangélica Vivir es Cristo", "Gobernador Manuel Crespo 733/761"], [26, "Iglesia Evangélica Ministerio Profético a las Naciones", "Rondeau 1107"], [27, "IEPY – Iglesia Evangélica Pentecostal y Misionera", "Soldado Bordón 2396"], [28, "IEP Paraná – Templo Central", "Enrique Acebal 2508"], [29, "La Casa del Alfarero", "Av. Jorge Newbery 1643"], [30, "Asamblea Cristiana", "Antonio Luis Berutti 685"], [31, "Iglesia Cristiana Evangélica", "Cervantes 547"], [32, "Iglesia Comunidad Cristiana Paraná", "Las Camelias 2846"], [33, "Congregación Cristiana Nueva Unción Paraná", "Santiago Solioz 2487"]];
+
+const map = L.map('churchMap', {scrollWheelZoom:true}).setView([-31.744, -60.517], 13);
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  maxZoom: 19,
+  attribution: '&copy; OpenStreetMap contributors'
+}).addTo(map);
+
+const markerLayer = L.layerGroup().addTo(map);
+const bounds = [];
+const status = document.getElementById('mapStatus');
+
+function markerIcon(n) {
+  return L.divIcon({
+    className:'',
+    html:`<div class="number-marker">${String(n).padStart(2,'0')}</div>`,
+    iconSize:[31,31],
+    iconAnchor:[15,15],
+    popupAnchor:[0,-15]
+  });
+}
+
+async function geocodeChurch(church) {
+  const [n,name,address] = church;
+  if (address.toLowerCase().includes('pendiente')) return {church, pending:true};
+  const q = encodeURIComponent(address + ', Paraná, Entre Ríos, Argentina');
+  try {
+    const res = await fetch(`https://photon.komoot.io/api/?q=${q}&limit=1`);
+    if (!res.ok) throw new Error('geocode');
+    const data = await res.json();
+    const feature = data.features && data.features[0];
+    if (!feature) return {church, pending:true};
+    const [lng,lat] = feature.geometry.coordinates;
+    return {church, lat, lng};
+  } catch(e) {
+    return {church, pending:true};
+  }
+}
+
+(async function loadMarkers(){
+  let located = 0;
+  let pending = 0;
+
+  // Sequential requests keep the demo gentle on the geocoding service.
+  for (const church of churchData) {
+    const result = await geocodeChurch(church);
+    const [n,name,address] = church;
+    if (result.lat !== undefined) {
+      const marker = L.marker([result.lat,result.lng], {icon:markerIcon(n)}).addTo(markerLayer);
+      const query = encodeURIComponent(address + ', Paraná, Entre Ríos, Argentina');
+      marker.bindPopup(`
+        <div class="popup-title">${name}</div>
+        <div class="popup-address">⌖ ${address}</div>
+        <a class="popup-route" target="_blank" rel="noopener"
+           href="https://www.google.com/maps/search/?api=1&query=${query}">Cómo llegar ↗</a>
+      `);
+      bounds.push([result.lat,result.lng]);
+      located++;
+    } else {
+      pending++;
+    }
+    status.innerHTML = `Ubicaciones cargadas: <b>${located}</b> de 33 · ${pending} pendiente(s)`;
+  }
+
+  if (bounds.length) map.fitBounds(bounds, {padding:[25,25]});
+  status.innerHTML = `Mapa con <b>${located}</b> de 33 iglesias ubicadas · La Nº 21 queda pendiente hasta confirmar su dirección.`;
+})();
+</script>
+</body>
+</html>
